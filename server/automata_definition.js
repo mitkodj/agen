@@ -8,6 +8,10 @@ var automata = [{
 		// }
 		],
 		failTransition: 'f0'
+	}, {
+		name: 'f11',
+		transitions:[],
+		failTransition: 'f0'
 	}],
 	number_of_nodes = 1;
 
@@ -21,6 +25,16 @@ function getStateByName(name){
 	for (var i = automata.length - 1; i >= 0; i--) {
 		if (automata[i].name == name) {
 			return automata[i];
+		}
+	};
+
+	return undefined;
+}
+
+function getStateIndexByName(name){
+	for (var i = automata.length - 1; i >= 0; i--) {
+		if (automata[i].name == name) {
+			return i;
 		}
 	};
 
@@ -83,7 +97,25 @@ function getAutomata(){
 }
 
 function minify(){
+	removeUnreachable();
+}
 
+function deleteState(name){
+	automata.splice(getStateIndexByName(name), 1);
+}
+
+function removeUnreachable(){
+	var reachable = _.pluck(_.uniq(_.flatten(_.pluck(automata, "transitions"))), "s"),
+		all = _.pluck(automata, "name");
+
+	//due to first element being f0
+	var result = _.rest(_.difference(all, reachable));
+
+	result.forEach(function(stateName){
+		deleteState(stateName);
+	});
+
+	console.log(_.pluck(automata, "name"));
 }
 
 module.exports = {
@@ -93,5 +125,6 @@ module.exports = {
 	    reset: reset,
 	    getCurrentState: getCurrentState,
 	    addWord: addWord,
-	    getAutomata: getAutomata
+	    getAutomata: getAutomata,
+	    minify: minify
 };

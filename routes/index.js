@@ -4,7 +4,7 @@ var automata = require('../server/automata_definition');
 
 automata.addWord('mitko');
 
- // automata.getAutomata();
+ automata.minify();
 
 /* GET home page. */
 router.get('/', function(req, res) {
